@@ -12,7 +12,8 @@ body {
     min-width: 100%;
     max-width: 100%;
 
-    z-index: 1;
+    z-index: -69;
+
 }
 
 .navbar-logo {
@@ -20,7 +21,7 @@ body {
     display: inline-block;
     padding-top: .5rem;
     padding-bottom: .5rem;
-    margin-right: 1rem'
+    margin-right: 1rem;
 
 }
 
@@ -37,5 +38,5 @@ body {
 
     max-width: 50%;
     max-height: 50%;
-    z-index: 2;
+
 }
