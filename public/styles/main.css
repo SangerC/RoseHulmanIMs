@@ -40,3 +40,37 @@ body {
     max-height: 50%;
 
 }
+
+#teamsButton {
+    font-family: "Russo One", Times, Serif;
+}
+
+#profileButton {
+    font-family: "Russo One", Times, Serif;
+}
+
+#loginButton {
+    font-family: "Russo One", Times, Serif;
+}
+
+#releaseTitle {
+    font-family: "Russo One", Times, Serif;
+    color: white;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+#waiverText {
+    text-align: center;
+    color: black;
+    size: 18px;
+    font-family: "Russo One", Times, Serif;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
+    background-color:darkgray;
+    line-height: 2.2;
+}
