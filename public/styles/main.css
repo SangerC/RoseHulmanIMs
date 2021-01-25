@@ -4,7 +4,7 @@ body {
 
 
 .background-1 {
-    position: fixed;
+    position: absolute;
     opacity: 0.25;
     width: 100%;
     height: 100%;
@@ -43,14 +43,25 @@ body {
 
 #teamsButton {
     font-family: "Russo One", Times, Serif;
+    background-color: black;
 }
 
 #profileButton {
     font-family: "Russo One", Times, Serif;
+    background-color: black;
+}
+
+#waiverAcceptButton {
+    display: block;
+    font-family: "Russo One", Times, Serif;
+    background-color: black;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
 }
 
 #loginButton {
     font-family: "Russo One", Times, Serif;
+    background-color: black;
 }
 
 #releaseTitle {
