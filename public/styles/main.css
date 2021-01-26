@@ -44,11 +44,15 @@ body {
 #teamsButton {
     font-family: "Russo One", Times, Serif;
     background-color: black;
+    margin-left: 15px;
+    margin-right: 5px;
 }
 
 #profileButton {
     font-family: "Russo One", Times, Serif;
     background-color: black;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 #waiverAcceptButton {
@@ -62,6 +66,8 @@ body {
 #loginButton {
     font-family: "Russo One", Times, Serif;
     background-color: black;
+    margin-left: 5px;
+    margin-right: 15px;
 }
 
 #releaseTitle {
