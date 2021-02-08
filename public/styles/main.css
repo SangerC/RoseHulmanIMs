@@ -92,3 +92,34 @@ body {
     line-height: 2.2;
 }
 
+.card {
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+
+#gameInfoButton {
+    font-family: "Russo One", Times, Serif;
+    background-color: black;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.icon-image {
+    max-width: 12%;
+    max-height: 12%;
+    display: inline;
+    margin: 10px 10px;
+}
+
+.card-image-title {
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+#gameTitle {
+    color: black;
+    size: 18px;
+    font-family: "Russo One", Times, Serif; 
+    text-decoration: none;
+}
