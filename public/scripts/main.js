@@ -1,5 +1,18 @@
 var rhit = rhit || {};
 
+rhit.FB_COLLECTION_IM = "MovieQuotes";
+rhit.FB_KEY_TEAMA = "teama";
+rhit.FB_KEY_TEAMB = "teamb";
+rhit.FB_KEY_DATE = "date";
+rhit.FB_KEY_LEAGUE = "league";
+rhit.FB_KEY_STATUS = "status";
+rhit.FB_KEY_SPORT = "sport";
+rhit.FB_KEY_SPORT = "location";
+rhit.FB_KEY_LAST_TOUCHED = "lastTouched";
+rhit.FB_KEY_AUTHOR = "author";
+rhit.fbMatchManager = null;
+rhit.fbAuthManager = null;
+
 // From: https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro/35385518#35385518
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -16,7 +29,7 @@ rhit.match = class{
         this.league = league;
         this.status = status;
         this.sport = sport;
-        this.location;
+        this.location = location;
 	}
 }
 
@@ -52,7 +65,7 @@ rhit.HomePageController = class {
 
 	updateList() {
 
-		const newList = htmlToElement('<div id="quoteListContainer"></div>');
+		const newList = htmlToElement('<div id="matchPage"></div>');
 		for (let i = 0; i < rhit.fbMovieQuotesManager.length; i++) {
 			const mq = rhit.fbMovieQuotesManager.getMovieQuoteAtIndex(i);
 			const newCard = this._createCard(mq);
@@ -68,13 +81,123 @@ rhit.HomePageController = class {
 		oldList.parentElement.appendChild(newList);
 	}
 
-	_createCard(movieQuote) {
+	_createCard(match) {
 		return htmlToElement(`<div class="card">
 		<div class="card-body">
-			<h5 class="card-title">${movieQuote.quote}</h5>
-			<h6 class="card-subtitle mb-2 text-muted">${movieQuote.movie}</h6>
+            <h5 class="card-title">${match.date}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">${match.sport}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">${match.teamA}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">${match.teamB}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">${match.league}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">${match.status}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">${match.location}</h6>
 		</div>
 	</div>`);
+	}
+}
+rhit.matchManager = class {
+	constructor(uid) {
+		this._uid = uid;
+		this._documentSnapshots = [];
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_MATCH);
+		this._unsubscribe = null;
+	}
+
+	add(teamA, teamB, date, league, status, sport, location) {
+		this._ref.add({
+				[rhit.FB_KEY_TEAMA]: teamA,
+                [rhit.FB_KEY_TEAMB]: teamB,
+                [rhit.FB_KEY_DATE]: date,
+                [rhit.FB_KEY_LEAGUE]: league,
+                [rhit.FB_KEY_STATUS]: status,
+                [rhit.FB_KEY_SPORT]: sport,
+                [rhit.FB_KEY_LOCATION]: location,
+				[rhit.FB_KEY_AUTHOR]: rhit.fbAuthManager.uid,
+				[rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+			})
+			.then(function (docRef) {
+				console.log("Document written with ID: ", docRef.id);
+			})
+			.catch(function (error) {
+				console.error("Error adding document: ", error);
+			});
+	}
+
+	beginListening(changeListener) {
+
+		let query = this._ref.orderBy(rhit.FB_KEY_LAST_TOUCHED, "desc").limit(50);
+		if (this._uid) {
+				query = query.where(rhit.FB_KEY_AUTHOR, "==", this._uid);
+		}
+		this._unsubscribe = query.onSnapshot((querySnapshot) => {
+				console.log("MovieQuote update!");
+				this._documentSnapshots = querySnapshot.docs;
+				changeListener();
+			});
+	}
+
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	get length() {
+		return this._documentSnapshots.length;
+	}
+
+	getMovieQuoteAtIndex(index) {
+		const docSnapshot = this._documentSnapshots[index];
+		const mq = new rhit.MovieQuote(docSnapshot.id,
+			docSnapshot.get(rhit.FB_KEY_QUOTE),
+			docSnapshot.get(rhit.FB_KEY_MOVIE));
+		return mq;
+	}
+}
+
+rhit.FbAuthManager = class {
+	constructor() {
+		this._user = null;
+	}
+
+	beginListening(changeListener) {
+		firebase.auth().onAuthStateChanged((user) => {
+			this._user = user;
+			changeListener();
+		});
+	}
+
+	signIn() {
+		console.log("Sign in using Rosefire");
+		Rosefire.signIn("eb20b5be-d31d-40fd-b4b7-e50dee8c5bf2", (err, rfUser) => {
+			if (err) {
+				console.log("Rosefire error!", err);
+				return;
+			}
+			console.log("Rosefire success!", rfUser);
+			firebase.auth().signInWithCustomToken(rfUser.token).catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				if (errorCode === 'auth/invalid-custom-token') {
+					alert('The token you provided is not valid.');
+				} else {
+					console.error("Custom auth error", errorCode, errorMessage);
+				}
+			});
+		});
+
+	}
+
+	signOut() {
+		firebase.auth().signOut().catch((error) => {
+			console.log("Sign out error");
+		});
+	}
+
+	get isSignedIn() {
+		return !!this._user;
+	}
+
+	get uid() {
+		return this._user.uid;
 	}
 }
 
@@ -83,13 +206,11 @@ rhit.main = function () {
     console.log("Ready");
 
     document.querySelector("#teamsButton").onclick = (event) => {
-        window.location.href = "/teams.html";
-    }
-    document.querySelector("#teamsButton").onclick = (event) => {
-        window.location.href = "/teams.html";
+        window.location.href = "teams.html";
     }
     document.querySelector("#profileButton").onclick = (event) => {
-        window.location.href = "/profile.html";
+		if(fbMatchManager.isSignedIn()) window.location.href = "profile.html";
+		else window.location.href = "login.html";
     }
     document.querySelector("#loginButton").onclick = (event) => {
         console.log("TODO: Implement RoseFire here.")
