@@ -114,7 +114,6 @@ body {
 
 .card-image-title {
     display: inline-flex;
-    vertical-align: middle;
 }
 
 #gameTitle {
@@ -131,4 +130,46 @@ body {
 #gameStatusText {
     font-size: 18px;
     font-family: "Russo One", Times, Serif; 
+}
+
+#backHomeButton {
+    font-family: "Russo One", Times, Serif;
+    background-color: black;
+    font-size: 18px;
+}
+
+#titleInformation {
+    margin-top: 20px;
+}
+
+#teamHeader {
+    font-size: 36px;
+    font-family: "Russo One", Times, Serif;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+#gameInfoBlock {
+    font-family: "Russo One", Times, Serif;
+    color: #ede4e4;
+    font-size: 18px;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+#teamOneInfo, #teamTwoInfo, #rosterHeading {
+    font-size: 26px;
+    font-family: "Russo One", Times, Serif;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+#rosterHeading {
+    margin-left: 25px;
+}
+
+#roster, #teamOneDesc, #teamTwoDesc {
+    font-size: 18px;
+    font-family: "Russo One", Times, Serif;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;  
 }

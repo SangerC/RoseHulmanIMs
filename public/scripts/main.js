@@ -214,6 +214,12 @@ rhit.main = function () {
     }
     document.querySelector("#loginButton").onclick = (event) => {
         console.log("TODO: Implement RoseFire here.")
+	}
+	document.querySelector("#gameInfoButton").onclick = (event) => {
+        window.location.href = "game.html";
+	}
+	document.querySelector("#backHomeButton").onclick = (event) => {
+        window.location.href = "index.html";
     }
 };
 
