@@ -205,22 +205,54 @@ rhit.FbAuthManager = class {
 rhit.main = function () {
     console.log("Ready");
 
-    document.querySelector("#teamsButton").onclick = (event) => {
-        window.location.href = "teams.html";
-    }
-    document.querySelector("#profileButton").onclick = (event) => {
-		if(fbMatchManager.isSignedIn()) window.location.href = "profile.html";
-		else window.location.href = "login.html";
-    }
-    document.querySelector("#loginButton").onclick = (event) => {
-        console.log("TODO: Implement RoseFire here.")
-	}
-	document.querySelector("#gameInfoButton").onclick = (event) => {
-        window.location.href = "game.html";
-	}
-	document.querySelector("#backHomeButton").onclick = (event) => {
-        window.location.href = "index.html";
-    }
+    // document.querySelector("#teamsButton").onclick = (event) => {
+    //     window.location.href = "teams.html";
+    // }
+    // document.querySelector("#profileButton").onclick = (event) => {
+	// 	if(fbMatchManager.isSignedIn()) window.location.href = "profile.html";
+	// 	else window.location.href = "login.html";
+    // }
+    // document.querySelector("#loginButton").onclick = (event) => {
+    //     console.log("TODO: Implement RoseFire here.")
+	// }
+	// document.querySelectorAll(".gameInfoButton").onclick = (event) => {
+    //     window.location.href = "game.html";
+	// }
+	// document.querySelectorAll("#backHomeButton").forEach = (event) => {
+    //     window.location.href = "index.html";
+	// }
+	// document.querySelector("#teamOneButton").forEach = (event) => {
+	// 	window.location.href = "team.html";
+	// }
+	// document.querySelector("#teamTwoButton").onclick = (event) => {
+	// 	window.location.href = "team.html";
+	// }
+
+	document.querySelectorAll(".gameInfoButton").forEach(button => {
+		button.onclick = () => {
+			window.location.href = "game.html";
+		}
+	});
+	document.querySelector("#teamOneButton").forEach(button => {
+		button.onclick = () => {
+			window.location.href = "team.html";
+		}
+	});
+	document.querySelector("#teamTwoButton").forEach(button => {
+		button.onclick = () => {
+			window.location.href = "team.html";
+		}
+	});
+	document.querySelector("#teamsButton").forEach(button => {
+		button.onclick = () => {
+			window.location.href = "teams.html";
+		}
+	});
+	document.querySelectorAll("#backHomeButton").forEach(button => {
+		button.onclick = () => {
+			window.location.href = "index.html";
+		}
+	});
 };
 
 rhit.main();
