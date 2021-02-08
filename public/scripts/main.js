@@ -1,15 +1,20 @@
 var rhit = rhit || {};
 
-rhit.FB_COLLECTION_IM = "MovieQuotes";
+//collections
+rhit.FB_COLLECTION_MATCH = "matches";
+
+//match definitions
 rhit.FB_KEY_TEAMA = "teama";
 rhit.FB_KEY_TEAMB = "teamb";
 rhit.FB_KEY_DATE = "date";
 rhit.FB_KEY_LEAGUE = "league";
 rhit.FB_KEY_STATUS = "status";
 rhit.FB_KEY_SPORT = "sport";
-rhit.FB_KEY_SPORT = "location";
+rhit.FB_KEY_LOCATION = "location";
 rhit.FB_KEY_LAST_TOUCHED = "lastTouched";
 rhit.FB_KEY_AUTHOR = "author";
+
+//singletons
 rhit.fbMatchManager = null;
 rhit.fbAuthManager = null;
 
@@ -21,8 +26,9 @@ function htmlToElement(html) {
 	return template.content.firstChild;
 }
 
-rhit.match = class{
-    constructor(teamA, teamB, date, league, status, sport, location) {
+rhit.Match = class{
+    constructor(id, teamA, teamB, date, league, status, sport, location) {
+		this.id = id;
         this.teamA = teamA;
         this.teamB = teamB;
         this.date = date;
@@ -35,47 +41,22 @@ rhit.match = class{
 
 rhit.HomePageController = class {
 	constructor() {
-
-		document.querySelector("#menuShowAllQuotes").addEventListener("click", (event) => {
-			window.location.href = "/list.html";
-		});
-		document.querySelector("#menuShowMyQuotes").addEventListener("click", (event) => {
-			window.location.href = `/list.html?uid=${rhit.fbAuthManager.uid}`;
-		});
-		document.querySelector("#menuSignOut").addEventListener("click", (event) => {
-			rhit.fbAuthManager.signOut();
-		});
-
-		document.querySelector("#submitAddQuote").addEventListener("click", (event) => {
-			const quote = document.querySelector("#inputQuote").value;
-			const movie = document.querySelector("#inputMovie").value;
-			rhit.fbMovieQuotesManager.add(quote, movie);
-		});
-
-		$("#addQuoteDialog").on("show.bs.modal", (event) => {
-			document.querySelector("#inputQuote").value = "";
-			document.querySelector("#inputMovie").value = "";
-		});
-		$("#addQuoteDialog").on("shown.bs.modal", (event) => {
-			document.querySelector("#inputQuote").focus();
-		});
-
-		rhit.fbMovieQuotesManager.beginListening(this.updateList.bind(this));
+		rhit.fbMatchManager.beginListening(this.updateList.bind(this));
 	}
 
 	updateList() {
-
-		const newList = htmlToElement('<div id="matchPage"></div>');
-		for (let i = 0; i < rhit.fbMovieQuotesManager.length; i++) {
-			const mq = rhit.fbMovieQuotesManager.getMovieQuoteAtIndex(i);
-			const newCard = this._createCard(mq);
+		console.log(rhit.fbMatchManager.length);
+		const newList = htmlToElement('<div id="matches"></div>');
+		for (let i = 0; i < rhit.fbMatchManager.length; i++) {
+			const match = rhit.fbMatchManager.getMatchAtIndex(i);
+			const newCard = this._createCard(match);
 			newCard.onclick = (event) => {
-				window.location.href = `/moviequote.html?id=${mq.id}`;
+				window.location.href = `/match.html?id=${match.id}`;
 			};
 			newList.appendChild(newCard);
 		}
 
-		const oldList = document.querySelector("#quoteListContainer");
+		const oldList = document.querySelector("#matches");
 		oldList.removeAttribute("id");
 		oldList.hidden = true;
 		oldList.parentElement.appendChild(newList);
@@ -84,35 +65,35 @@ rhit.HomePageController = class {
 	_createCard(match) {
 		return htmlToElement(`<div class="card">
 		<div class="card-body">
-            <h5 class="card-title">${match.date}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">${match.sport}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">${match.teamA}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">${match.teamB}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">${match.league}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">${match.status}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">${match.location}</h6>
+			<h5 class="card-title">${match.date}</h5>
+			<h6 class="card-subtitle mb-2">${match.teamA} vs ${match.teamB}</h6>
+			<h6 class="card-subtitle mb-2">${match.sport}</h6>
+			<h6 class="card-subtitle mb-2">${match.league}</h6>
+			<h6 class="card-subtitle mb-2">${match.location}</h6>
+			<h6 class="card-subtitle mb-2">${match.status}</h6>
 		</div>
 	</div>`);
 	}
+
 }
-rhit.matchManager = class {
-	constructor(uid) {
-		this._uid = uid;
+
+rhit.FbMatchManager = class {
+	constructor() {
 		this._documentSnapshots = [];
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_MATCH);
 		this._unsubscribe = null;
 	}
 
 	add(teamA, teamB, date, league, status, sport, location) {
+		console.log("tried");
 		this._ref.add({
-				[rhit.FB_KEY_TEAMA]: teamA,
-                [rhit.FB_KEY_TEAMB]: teamB,
-                [rhit.FB_KEY_DATE]: date,
-                [rhit.FB_KEY_LEAGUE]: league,
-                [rhit.FB_KEY_STATUS]: status,
-                [rhit.FB_KEY_SPORT]: sport,
-                [rhit.FB_KEY_LOCATION]: location,
-				[rhit.FB_KEY_AUTHOR]: rhit.fbAuthManager.uid,
+				[rhit.FB_KEY_TEAMA] : teamA,
+				[rhit.FB_KEY_TEAMB] : teamB,
+				[rhit.FB_KEY_DATE] :  date,
+				[rhit.FB_KEY_LEAGUE] :league,
+				[rhit.FB_KEY_STATUS] :status,
+				[rhit.FB_KEY_SPORT] : sport,
+				[rhit.FB_KEY_LOCATION] : location,
 				[rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
 			})
 			.then(function (docRef) {
@@ -124,13 +105,9 @@ rhit.matchManager = class {
 	}
 
 	beginListening(changeListener) {
-
-		let query = this._ref.orderBy(rhit.FB_KEY_LAST_TOUCHED, "desc").limit(50);
-		if (this._uid) {
-				query = query.where(rhit.FB_KEY_AUTHOR, "==", this._uid);
-		}
-		this._unsubscribe = query.onSnapshot((querySnapshot) => {
-				console.log("MovieQuote update!");
+		this._unsubscribe = this._ref
+			.limit(50)
+			.onSnapshot((querySnapshot) => {
 				this._documentSnapshots = querySnapshot.docs;
 				changeListener();
 			});
@@ -144,61 +121,30 @@ rhit.matchManager = class {
 		return this._documentSnapshots.length;
 	}
 
-	getMovieQuoteAtIndex(index) {
+	getMatchAtIndex(index) {
 		const docSnapshot = this._documentSnapshots[index];
-		const mq = new rhit.MovieQuote(docSnapshot.id,
-			docSnapshot.get(rhit.FB_KEY_QUOTE),
-			docSnapshot.get(rhit.FB_KEY_MOVIE));
-		return mq;
+		const match = new rhit.Match(docSnapshot.id,
+			docSnapshot.get(rhit.FB_KEY_TEAMA),
+			docSnapshot.get(rhit.FB_KEY_TEAMB),
+			docSnapshot.get(rhit.FB_KEY_DATE),
+			docSnapshot.get(rhit.FB_KEY_LEAGUE),
+			docSnapshot.get(rhit.FB_KEY_STATUS),
+			docSnapshot.get(rhit.FB_KEY_SPORT),
+			docSnapshot.get(rhit.FB_KEY_LOCATION)			
+			);
+		return match;
 	}
 }
 
-rhit.FbAuthManager = class {
-	constructor() {
-		this._user = null;
-	}
+rhit.main = function(){
+	rhit.fbMatchManager = new rhit.FbMatchManager();
+	new rhit.HomePageController();
 
-	beginListening(changeListener) {
-		firebase.auth().onAuthStateChanged((user) => {
-			this._user = user;
-			changeListener();
-		});
-	}
+	const ref = firebase.firestore().collection("MovieQuotes");
 
-	signIn() {
-		console.log("Sign in using Rosefire");
-		Rosefire.signIn("eb20b5be-d31d-40fd-b4b7-e50dee8c5bf2", (err, rfUser) => {
-			if (err) {
-				console.log("Rosefire error!", err);
-				return;
-			}
-			console.log("Rosefire success!", rfUser);
-			firebase.auth().signInWithCustomToken(rfUser.token).catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				if (errorCode === 'auth/invalid-custom-token') {
-					alert('The token you provided is not valid.');
-				} else {
-					console.error("Custom auth error", errorCode, errorMessage);
-				}
-			});
-		});
+	//rhit.fbMatchManager.add("Avalanche", "catapults", "10:00 am Friday 02/02/2021","Greek A", "To Be Played","soccer", "SRC court 2");
 
-	}
 
-	signOut() {
-		firebase.auth().signOut().catch((error) => {
-			console.log("Sign out error");
-		});
-	}
-
-	get isSignedIn() {
-		return !!this._user;
-	}
-
-	get uid() {
-		return this._user.uid;
-	}
 }
 
 
