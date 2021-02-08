@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<!-- This is an example page for games. Obviously each game would create it's own page, but for the purposes of demonstration 
+and the lack of backend work we have done, this exists to show functionality and will be replaced.-->
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+
+    <title>Rose-Hulman IMs</title>
+</head>
+
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">
+            <img src="./img/logo_elephant.svg" width="100" height="80" alt="Rose-Hulman Athletic Logo">
+        </a>
+        <!--button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button-->
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+          <button id="teamsButton" type="button" class="btn btn-raised btn-light">Teams</button>
+          <button id="profileButton" type="button" class="btn btn-raised btn-light">Profile</button>
+          <button id="loginButton" type="button" class="btn btn-raised btn-light">Log In</button>
+          
+          <!--ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.rose-hulman.edu/">Temp Link</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
+          </form-->
+        </div>
+      </nav>
+      
+      <img src="./img/rose-union.jpg" class="background-1">
+
+      <div class="mx-auto text-center mt-5">
+        <img src="./img/logo-header.svg" class="welcome-logo">
+      </div>
+    
+      <script src="scripts/jquery.min.js"></script>
+      <script src="scripts/popper.js"></script>
+      <script src="scripts/bootstrap-material-design.js"></script>
+      <script>
+        $("body").bootstrapMaterialDesign();
+      </script>
+      <script src="/__/firebase/7.18.0/firebase-app.js"></script>
+      <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
+      <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
+      <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
+      <script src="/__/firebase/init.js"></script>
+      <script src="scripts/rosefire.min.js"></script>
+      <script src="scripts/main.js"></script>
+</body>
+
+
+
+
+
+
+
+</html>
