@@ -125,3 +125,92 @@ body {
 #leagueFilters input{
     text-align: left;
 }
+
+.card {
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+
+#gameInfoButton {
+    font-family: "Russo One", Times, Serif;
+    background-color: black;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.icon-image {
+    max-width: 12%;
+    max-height: 12%;
+    display: inline;
+    margin: 10px 10px;
+}
+
+.card-image-title {
+    display: inline-flex;
+}
+
+#gameTitle {
+    color: black;
+    font-family: "Russo One", Times, Serif; 
+    text-decoration: none;
+}
+
+#courtAndTimeText {
+    font-size: 18px;
+    font-family: "Russo One", Times, Serif; 
+}
+
+#gameStatusText {
+    font-size: 18px;
+    font-family: "Russo One", Times, Serif; 
+}
+
+#backHomeButton {
+    font-family: "Russo One", Times, Serif;
+    background-color: black;
+    font-size: 18px;
+    margin-top: 40px;
+}
+
+#titleInformation {
+    margin-top: 20px;
+}
+
+#teamHeader {
+    font-size: 36px;
+    font-family: "Russo One", Times, Serif;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+#gameInfoBlock {
+    font-family: "Russo One", Times, Serif;
+    color: #ede4e4;
+    font-size: 18px;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+#teamOneInfo, #teamTwoInfo, #rosterHeading {
+    font-size: 26px;
+    font-family: "Russo One", Times, Serif;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+#rosterHeading {
+    margin-left: 25px;
+}
+
+#roster, #teamOneDesc, #teamTwoDesc {
+    font-size: 18px;
+    font-family: "Russo One", Times, Serif;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;  
+}
+
+#teamOneButton, #teamTwoButton {
+    font-family: "Russo One", Times, Serif;
+    background-color: #570000;
+    font-size: 18px;
+}
