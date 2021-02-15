@@ -2,6 +2,7 @@ var rhit = rhit || {};
 
 //collections
 rhit.FB_COLLECTION_MATCH = "matches";
+rhit.FB_COLLECTION_SPORTS = "sports";
 
 //match definitions
 rhit.FB_KEY_TEAMA = "teama";
@@ -18,6 +19,8 @@ rhit.FB_KEY_AUTHOR = "author";
 rhit.fbMatchManager = null;
 rhit.fbAuthManager = null;
 
+rhit.currentDay = null;
+
 // From: https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro/35385518#35385518
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -27,8 +30,8 @@ function htmlToElement(html) {
 }
 
 rhit.Match = class{
-    constructor(id, teamA, teamB, date, league, status, sport, location) {
-		this.id = id;
+    constructor(id, teamA, teamB, date, league, status, sport, location, sportImg) {
+				this.id = id;
         this.teamA = teamA;
         this.teamB = teamB;
         this.date = date;
@@ -36,6 +39,7 @@ rhit.Match = class{
         this.status = status;
         this.sport = sport;
         this.location = location;
+				this.sportImg = sportImg;
 	}
 }
 
@@ -64,13 +68,14 @@ rhit.HomePageController = class {
 
 	_createCard(match) {
 		return htmlToElement(`<div class="card">
+		 <div class="card-image-title">
+				<img src="${match.sportImg}" class="icon-image">
+				<p class="card-text">${match.sport}</p>
+				<h3 class="card-header" id="gameTitle">${match.teamA}  vs.  ${match.teamB}</h3>
+		</div>
 		<div class="card-body">
-			<h5 class="card-title">${match.date}</h5>
-			<h6 class="card-subtitle mb-2">${match.teamA} vs ${match.teamB}</h6>
-			<h6 class="card-subtitle mb-2">${match.sport}</h6>
-			<h6 class="card-subtitle mb-2">${match.league}</h6>
-			<h6 class="card-subtitle mb-2">${match.location}</h6>
-			<h6 class="card-subtitle mb-2">${match.status}</h6>
+			<p class="card-text" id="courtAndTimeText">${match.location}  ${match.date}</p>
+			<p class="card-text" id="gameStatusTextText">${match.status}</p>
 		</div>
 	</div>`);
 	}
@@ -123,6 +128,16 @@ rhit.FbMatchManager = class {
 
 	getMatchAtIndex(index) {
 		const docSnapshot = this._documentSnapshots[index];
+		const sportRef = firebase.firestore().collection(rhit.FB_COLLECTION_SPORTS);
+		
+		let sportImg = "https://media.npr.org/assets/img/2020/06/10/gettyimages-200199027-001-b5fb3d8d8469ab744d9e97706fa67bc5c0e4fa40.jpg";
+		sportRef.where("sport", "==", docSnapshot.get(rhit.FB_KEY_SPORT)).get().then((snap) =>{
+        snap.forEach((sp) => {
+          sportImg = sp.get("image");
+        	console.log("test");
+				});
+		});
+
 		const match = new rhit.Match(docSnapshot.id,
 			docSnapshot.get(rhit.FB_KEY_TEAMA),
 			docSnapshot.get(rhit.FB_KEY_TEAMB),
@@ -130,11 +145,49 @@ rhit.FbMatchManager = class {
 			docSnapshot.get(rhit.FB_KEY_LEAGUE),
 			docSnapshot.get(rhit.FB_KEY_STATUS),
 			docSnapshot.get(rhit.FB_KEY_SPORT),
-			docSnapshot.get(rhit.FB_KEY_LOCATION)			
+			docSnapshot.get(rhit.FB_KEY_LOCATION),
+			sportImg
 			);
 		return match;
 	}
 }
+
+rhit.buildCalendar = function(){
+	let calender = document.querySelector("calender");
+	let date = new Date();
+	let month = date.getMonth();
+	let days = rhit.getDaysFromMonth(month);
+	rhit.currentDay = date.getDate();
+
+
+
+	const newList = htmlToElement('<div id="calender" class="row"></div>');
+	for (let i = 0; i < 4; i++) {
+		for(let j=0; j<5;j++){
+			let day = j+1+i*7;
+			let element;
+			if(day==rhit.currentDay) element = htmlToElement(`<div class="calenderSpace currentDay col" data-date="${day}">${day}</div>`);
+			else if(day<=days) element = htmlToElement(`<div class="calenderSpace col" data-date="${day}">${day}</div>`);
+			else element = htmlToElement('<div class="calenderSpace col" data-date="-1"></div>');
+			newList.appendChild(element);
+		}
+    newList.appendChild(htmlToElement('<div class="w-100"></div>'));
+	}
+
+	const oldList = document.querySelector("#calender");
+	oldList.removeAttribute("id");
+	oldList.hidden = true;
+	oldList.parentElement.appendChild(newList);
+
+
+}
+
+rhit.getDaysFromMonth = function(month){
+	  if(month<7&&month%2==0||month>=7&&month%2==1) return 31;//This is statement finds month with 31 days
+    else if(month==1) return 28;//February special case
+    else return 30;
+}
+
 
 rhit.main = function(){
 	rhit.fbMatchManager = new rhit.FbMatchManager();
@@ -144,61 +197,7 @@ rhit.main = function(){
 
 	//rhit.fbMatchManager.add("Avalanche", "catapults", "10:00 am Friday 02/02/2021","Greek A", "To Be Played","soccer", "SRC court 2");
 
-
+	rhit.buildCalendar();
 }
-
-
-rhit.main = function () {
-    console.log("Ready");
-
-    // document.querySelector("#teamsButton").onclick = (event) => {
-    //     window.location.href = "teams.html";
-    // }
-    // document.querySelector("#profileButton").onclick = (event) => {
-	// 	if(fbMatchManager.isSignedIn()) window.location.href = "profile.html";
-	// 	else window.location.href = "login.html";
-    // }
-    // document.querySelector("#loginButton").onclick = (event) => {
-    //     console.log("TODO: Implement RoseFire here.")
-	// }
-	// document.querySelectorAll(".gameInfoButton").onclick = (event) => {
-    //     window.location.href = "game.html";
-	// }
-	// document.querySelectorAll("#backHomeButton").forEach = (event) => {
-    //     window.location.href = "index.html";
-	// }
-	// document.querySelector("#teamOneButton").forEach = (event) => {
-	// 	window.location.href = "team.html";
-	// }
-	// document.querySelector("#teamTwoButton").onclick = (event) => {
-	// 	window.location.href = "team.html";
-	// }
-
-	document.querySelectorAll(".gameInfoButton").forEach(button => {
-		button.onclick = () => {
-			window.location.href = "game.html";
-		}
-	});
-	document.querySelector("#teamOneButton").forEach(button => {
-		button.onclick = () => {
-			window.location.href = "team.html";
-		}
-	});
-	document.querySelector("#teamTwoButton").forEach(button => {
-		button.onclick = () => {
-			window.location.href = "team.html";
-		}
-	});
-	document.querySelector("#teamsButton").forEach(button => {
-		button.onclick = () => {
-			window.location.href = "teams.html";
-		}
-	});
-	document.querySelectorAll("#backHomeButton").forEach(button => {
-		button.onclick = () => {
-			window.location.href = "index.html";
-		}
-	});
-};
 
 rhit.main();

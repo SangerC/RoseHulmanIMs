@@ -221,3 +221,12 @@ body {
     max-height: 45%;
     
 }
+
+.calenderSpace{
+    border: black 2px solid;
+    text-align: center;
+}
+
+.currentDay{
+    color: blue;
+}

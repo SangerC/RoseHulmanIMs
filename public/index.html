@@ -42,155 +42,57 @@
           </form-->
         </div>
     </nav>
+    
+    <div id="matchPage" class="row">
+
+      <div id="calenderSide" class="col-6">
+
+
+        <div id="calender" class="row">
         
-      <!-- TODO: Find a way to add league title without it being ugly. -->
-      <!-- TODO: Implement JavaScipt to take values from team creation. BACKEND!! -->
-      <div class="container-fluid">
-        <div class="row">
-          <div id="matchSide" class="col-md-12">
-            <div id="filterButtons">
-              <button type="button" class="btn btn-raised btn-light">LEAGUE</button>
-              <button type="button" class="btn btn-raised btn-light">SPORT</button>
-              <button type="button" class="btn btn-raised btn-light">LOCATION</button>
-    
-              <div id="leagueFilters">
-                <input type="checkbox" id="league1" name="league1" value="Bike">
-                <label for="league1">Greek A</label><br>
-                <input type="checkbox" id="league2" name="league2" value="Car">
-                <label for="league2">Greek B</label><br>
-                <input type="checkbox" id="league3" name="league3" value="Boat">
-                <label for="league3">Res Hall A</label><br>
-                <input type="checkbox" id="league3" name="league3" value="Boat">
-                <label for="league3">Res Hall B</label><br>
-                <input type="checkbox" id="league3" name="league3" value="Boat">
-                <label for="league3">Open</label><br>
-                <button type="button" class="btn btn-raised btn-light">Clear All</button>
-              </div>
-            </div>
-          </div>
-    
+
+
         </div>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-image-title">
-                <img src="./img/soccer.svg" class="icon-image">
-                <h3 class="card-header" id="gameTitle">
-                  Team 1 vs. Team 2
-                </h3>
-                <!-- See if you can fit the league under the title somehow while keeping it inline with the image. -->
-              </div>
-              <div class="card-body">
-                <p class="card-text" id="courtAndTimeText">
-                  Court 1 @ 9:00PM
-                </p>
-                <p class="card-text" id="gameStatusText">
-                  Game Status: To Be Played
-                </p>
-              </div>
-              <div class="card-footer">
-                <button type="button" class="btn btn-raised btn-light gameInfoButton" href="game.html"> Visit Game Page </button>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-image-title">
-                <img src="./img/volleyball.svg" class="icon-image">
-                <h3 class="card-header" id="gameTitle">
-                  Team 1 vs. Team 2
-                </h3>
-              </div>
-              <div class="card-body">
-                <p class="card-text" id="courtAndTimeText">
-                  Court 3 @ 9:00PM
-                </p>
-                <p class="card-text" id="gameStatusText">
-                  Game Status: To Be Played
-                </p>
-              </div>
-              <div class="card-footer">
-                <button type="button" class="btn btn-raised btn-light gameInfoButton" href="game.html"> Visit Game Page </button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-image-title">
-                <img src="./img/volleyball.svg" class="icon-image">
-                <h3 class="card-header" id="gameTitle">
-                  Team 1 vs. Team 2
-                </h3>
-              </div>
-              <div class="card-body">
-                <p class="card-text" id="courtAndTimeText">
-                  Court 3 @ 9:00PM
-                </p>
-                <p class="card-text" id="gameStatusText">
-                  Game Status: To Be Played
-                </p>
-              </div>
-              <div class="card-footer">
-                <button type="button" class="btn btn-raised btn-light gameInfoButton" href="game.html"> Visit Game Page </button>
-              </div>
-            </div>
-            <div class="card">
-              <h5 class="card-header">
-                NOTICE
-              </h5>
-              <div class="card-body">
-                <p class="card-text">
-                  For some reason, changing this card to match the formatting of the others breaks it.
 
-                  TODO: Figure out why the heck it be doing that.
+        <div id="Reminders">
+          <h1>Reminders:</h1>
+        </div>
 
-                  Also the background image is being weird. TODO: Get it to stay still.
-                </p>
-              </div>
-              <div class="card-footer">
-                <button type="button" class="btn btn-raised btn-light gameInfoButton"> Cool button </button>
-              </div>
-            </div>
+
+
+      </div>
+
+      <div id="matchSide" class="col-6">
+        <div id="filterButtons">
+          <button type="button" class="btn btn-raised btn-light">LEAGUE</button>
+          <button type="button" class="btn btn-raised btn-light">SPORT</button>
+          <button type="button" class="btn btn-raised btn-light">LOCATION</button>
+
+          <div id="leagueFilters">
+            <input type="checkbox" id="league1" name="league1" value="Bike">
+            <label for="league1">Greek A</label><br>
+            <input type="checkbox" id="league2" name="league2" value="Car">
+            <label for="league2">Greek B</label><br>
+            <input type="checkbox" id="league3" name="league3" value="Boat">
+            <label for="league3">Res Hall A</label><br>
+            <input type="checkbox" id="league3" name="league3" value="Boat">
+            <label for="league3">Res Hall B</label><br>
+            <input type="checkbox" id="league3" name="league3" value="Boat">
+            <label for="league3">Open</label><br>
+            <button type="button" class="btn btn-raised btn-light">Clear All</button>
           </div>
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-image-title">
-                <img src="./img/soccer.svg" class="icon-image">
-                <h3 class="card-header" id="gameTitle">
-                  Team 1 vs. Team 2
-                </h3>
-              </div>
-              <div class="card-body">
-                <p class="card-text" id="courtAndTimeText">
-                  Court 1 @ 9:00PM
-                </p>
-                <p class="card-text" id="gameStatusText">
-                  Game Status: To Be Played
-                </p>
-              </div>
-              <div class="card-footer">
-                <button type="button" class="btn btn-raised btn-light gameInfoButton" href="game.html"> Visit Game Page </button>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-image-title">
-                <img src="./img/volleyball.svg" class="icon-image">
-                <h3 class="card-header" id="gameTitle">
-                  Team 1 vs. Team 2
-                </h3>
-              </div>
-              <div class="card-body">
-                <p class="card-text" id="courtAndTimeText">
-                  Court 3 @ 9:00PM
-                </p>
-                <p class="card-text" id="gameStatusText">
-                  Game Status: To Be Played
-                </p>
-              </div>
-              <div class="card-footer">
-                <button type="button" class="btn btn-raised btn-light gameInfoButton" href="game.html"> Visit Game Page </button>
-              </div>
-            </div>
-  
-            <img src="./img/rose-union.jpg" class="background-1">
+        </div>
+      <div id="matches">
+
+
+
+
+      </div>
+      </div>
+
+
+    </div>
+           <img src="./img/rose-union.jpg" class="background-1">
 
 
       <script src="scripts/jquery.min.js"></script>
