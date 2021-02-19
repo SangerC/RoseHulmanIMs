@@ -218,18 +218,23 @@ body {
 #teamProfilePhoto {
     background-color: white;
     max-width: 45%;
-    max-height: 45%;
-    
+    max-height: 45%; 
 }
 
 #calenderSide{
-    margin: 10px;
+    margin: 35px;
 }
 
 .calenderSpace{
     text-align: center;
+    border: black 2px solid;
+    padding: 50px 0px;
 }
 
 .currentDay{
     color: blue;
+}
+
+#reminders{
+    padding-top: 20px;
 }

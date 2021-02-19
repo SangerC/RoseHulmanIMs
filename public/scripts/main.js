@@ -15,8 +15,12 @@ rhit.FB_KEY_LOCATION = "location";
 rhit.FB_KEY_LAST_TOUCHED = "lastTouched";
 rhit.FB_KEY_AUTHOR = "author";
 
+//sport definitions
+rhit.FB_KEY_IMG = "image"
+
 //singletons
 rhit.fbMatchManager = null;
+rhit.fbSportManager = null;
 rhit.fbAuthManager = null;
 
 rhit.currentDay = null;
@@ -128,17 +132,9 @@ rhit.FbMatchManager = class {
 
 	getMatchAtIndex(index) {
 		const docSnapshot = this._documentSnapshots[index];
-		const sportRef = firebase.firestore().collection(rhit.FB_COLLECTION_SPORTS);
 		
-		let sportImg = "https://media.npr.org/assets/img/2020/06/10/gettyimages-200199027-001-b5fb3d8d8469ab744d9e97706fa67bc5c0e4fa40.jpg";
-		sportRef.where("sport", "==", docSnapshot.get(rhit.FB_KEY_SPORT)).get().then((snap) =>{
-        snap.forEach((sp) => {
-          sportImg = sp.get("image");
-        	console.log("test");
-				});
-		});
-		
-		if(docSnapshot.get(rhit.FB_KEY_SPORT)=="soccer")sportImg="./img/soccer.svg";
+		let img = rhit.fbSportManager.getSport("default");
+		if(rhit.fbSportManager.getSport(docSnapshot.get(rhit.FB_KEY_SPORT))!=undefined) img = rhit.fbSportManager.getSport(docSnapshot.get(rhit.FB_KEY_SPORT));
 
 		const match = new rhit.Match(docSnapshot.id,
 			docSnapshot.get(rhit.FB_KEY_TEAMA),
@@ -148,10 +144,33 @@ rhit.FbMatchManager = class {
 			docSnapshot.get(rhit.FB_KEY_STATUS),
 			docSnapshot.get(rhit.FB_KEY_SPORT),
 			docSnapshot.get(rhit.FB_KEY_LOCATION),
-			sportImg
+			img
 			);
 		return match;
 	}
+}
+
+rhit.FbSportManager = class{
+
+	constructor(){
+		this.ref = firebase.firestore().collection(rhit.FB_COLLECTION_SPORTS);
+		this.sports ={};
+		this.getSports();
+	}
+
+	getSports(){
+		const sportImg = "https://media.npr.org/assets/img/2020/06/10/gettyimages-200199027-001-b5fb3d8d8469ab744d9e97706fa67bc5c0e4fa40.jpg";
+		this.ref.onSnapshot((querySnapshot) => {
+			querySnapshot.forEach((doc) => {
+				this.sports[doc.get(rhit.FB_KEY_SPORT)] = doc.get(rhit.FB_KEY_IMG);
+			});
+		});
+	}
+
+	getSport(sport){
+		return this.sports[sport];
+	}
+
 }
 
 rhit.FbAuthManager = class {
@@ -226,10 +245,8 @@ rhit.buildCalendar = function(){
 	let calender = document.querySelector("calender");
 	let date = new Date();
 	let month = date.getMonth();
-	let days = rhit.getDaysFromMonth(month);
+	let days = rhit.getDaysFromMonth(month, date.getFullYear());
 	rhit.currentDay = date.getDate();
-
-
 
 	const newList = htmlToElement('<div id="calender" class="row"></div>');
 	for (let i = 0; i < 4; i++) {
@@ -252,14 +269,28 @@ rhit.buildCalendar = function(){
 
 }
 
-rhit.getDaysFromMonth = function(month){
+rhit.getDaysFromMonth = function(month, year){
 	  if(month<7&&month%2==0||month>=7&&month%2==1) return 31;//This is statement finds month with 31 days
-    else if(month==1) return 28;//February special case
-    else return 30;
+    else if(month==1){ 
+			if(rhit.checkLeapyear(year)) return 29;
+			else return 28;//February special case
+		}
+			else return 30;
 }
 
+rhit.checkLeapyear = function(year){
+	if(year%4==0){
+		if(year%100==0){
+			if(year%400==0)return true;
+			return false;
+		}
+		return true;
+	}	
+	return false; 
+}
 
 rhit.main = function(){
+	rhit.fbSportManager = new rhit.FbSportManager();
 	rhit.fbMatchManager = new rhit.FbMatchManager();
 	new rhit.HomePageController();
 
