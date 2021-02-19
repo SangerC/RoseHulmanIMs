@@ -222,8 +222,11 @@ body {
     
 }
 
+#calenderSide{
+    margin: 10px;
+}
+
 .calenderSpace{
-    border: black 2px solid;
     text-align: center;
 }
 

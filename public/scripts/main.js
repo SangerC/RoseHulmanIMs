@@ -137,6 +137,8 @@ rhit.FbMatchManager = class {
         	console.log("test");
 				});
 		});
+		
+		if(docSnapshot.get(rhit.FB_KEY_SPORT)=="soccer")sportImg="./img/soccer.svg";
 
 		const match = new rhit.Match(docSnapshot.id,
 			docSnapshot.get(rhit.FB_KEY_TEAMA),
@@ -151,6 +153,74 @@ rhit.FbMatchManager = class {
 		return match;
 	}
 }
+
+rhit.FbAuthManager = class {
+	constructor() {
+		this._user = null;
+	}
+
+	beginListening(changeListener) {
+		firebase.auth().onAuthStateChanged((user) => {
+			this._user = user;
+			changeListener();
+		});
+	}
+
+	signIn() {
+		Rosefire.signIn("461fe83c-58db-4dfb-b6af-31ccdcb852e3", (err, rfUser) => {
+			if (err) {
+				return;
+			}
+			firebase.auth().signInWithCustomToken(rfUser.token).catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				if (errorCode === 'auth/invalid-custom-token') {
+					alert('The token you provided is not valid.');
+				} else {
+					console.error("Custom auth error", errorCode, errorMessage);
+				}
+			});
+		});
+
+	}
+
+	signOut() {
+		firebase.auth().signOut().catch((error) => {
+			console.log("Sign out error");
+		});
+	}
+
+	get isSignedIn() {
+		return !!this._user;
+	}
+
+	get uid() {
+		return this._user.uid;
+	}
+}
+
+rhit.checkForRedirects = function() {
+	let b = document.querySelector("#loginButton");
+	let pb = document.querySelector("#profileButton");
+	if(rhit.fbAuthManager.isSignedIn){
+		b.innerHTML = "LOGOUT";	
+		b.onclick = (event) =>{
+			rhit.fbAuthManager.signOut();
+		};
+		pb.onclick = (event) =>{
+			window.location.href = "/profile.html"
+		};
+	}
+	else{
+		b.innerHTML = "LOGIN";
+		b.onclick = (event) =>{
+			rhit.fbAuthManager.signIn();
+		};
+		pb.onclick = (event) =>{
+			rhit.fbAuthManager.signIn();
+		};
+	}
+};
 
 rhit.buildCalendar = function(){
 	let calender = document.querySelector("calender");
@@ -193,7 +263,12 @@ rhit.main = function(){
 	rhit.fbMatchManager = new rhit.FbMatchManager();
 	new rhit.HomePageController();
 
-	const ref = firebase.firestore().collection("MovieQuotes");
+	rhit.fbAuthManager = new rhit.FbAuthManager();
+	rhit.fbAuthManager.beginListening(() => {
+		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
+		rhit.checkForRedirects();
+	});
+
 
 	//rhit.fbMatchManager.add("Avalanche", "catapults", "10:00 am Friday 02/02/2021","Greek A", "To Be Played","soccer", "SRC court 2");
 
