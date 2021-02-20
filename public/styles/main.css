@@ -241,3 +241,7 @@ body {
 #month{
     text-align: center;
 }
+
+.dropdown {
+    display: inline-block;
+}
