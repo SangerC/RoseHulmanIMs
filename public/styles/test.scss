@@ -1,0 +1,14 @@
+$display-mode: inline-block;
+$margin-left: 10px;
+$font-color: black;
+$font-family: "Russo One", Times, Serif;
+
+.dropdown {
+    display: $display-mode;
+}
+
+.menu-item{
+    margin-left: $margin-left;
+    color: $font-color;
+    font-family: $font-family;
+}

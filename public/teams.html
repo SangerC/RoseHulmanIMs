@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
     <link rel="stylesheet" href='fullcalendar/main.css'>
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dropdown.css">
 
     <title>Rose-Hulman IMs</title>
 </head>
@@ -45,11 +46,48 @@
 
       <div>
         <div id="filterButtons">
-          <button id="leagueButton" type="button" class="btn btn-raised btn-light">LEAGUE</button>
+          <!-- <button id="leagueButton" type="button" class="btn btn-raised btn-light">LEAGUE</button>
           <button id="sportButton" type="button" class="btn btn-raised btn-light">SPORT</button>
-          <button id="locationButton" type="button" class="btn btn-raised btn-light">LOCATION</button>
+          <button id="locationButton" type="button" class="btn btn-raised btn-light">LOCATION</button> -->
+
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">League
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a class="menu-item" href="#">Greek A</a></li>
+              <li><a class="menu-item" href="#">Greek B</a></li>
+              <li><a class="menu-item" href="#">Res Hall A</a></li>
+              <li><a class="menu-item" href="#">Res Hall B</a></li>
+              <li><a class="menu-item" href="#">Open</a></li>
+            </ul>
+          </div>
+
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Sport
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a class="menu-item" href="#">Volleyball</a></li>
+              <li><a class="menu-item" href="#">Soccer</a></li>
+              <li><a class="menu-item" href="#">Ultimate Frisbee</a></li>
+              <li><a class="menu-item" href="#">eSports</a></li>
+            </ul>
+          </div>
+
+          <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Location
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a class="menu-item" href="#">SRC Court 1</a></li>
+              <li><a class="menu-item" href="#">SRC Court 2</a></li>
+              <li><a class="menu-item" href="#">SRC Court 3</a></li>
+              <li><a class="menu-item" href="#">SRC Court 4</a></li>
+              <li><a class="menu-item" href="#">Varsity Football Field</a></li>
+              <li><a class="menu-item" href="#">Varsity Soccer Field</a></li>
+            </ul>
+          </div>
           <button id="createTeamButton" type="button" class="btn btn-raised btn-light">CREATE</button>
         </div>
+
         <div id="teams">
 
         </div>

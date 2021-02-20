@@ -1,0 +1,11 @@
+.dropdown {
+  display: inline-block;
+}
+
+.menu-item {
+  margin-left: 10px;
+  color: black;
+  font-family: "Russo One", Times, Serif;
+}
+
+/*# sourceMappingURL=dropdown.css.map */
