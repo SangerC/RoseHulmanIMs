@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href='fullcalendar/main.css'>
     <link rel="stylesheet" href="styles/main.css">
 
     <title>Rose-Hulman IMs</title>
@@ -14,7 +15,7 @@
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <img src="./img/logo_elephant.svg" width="100" height="80" alt="Rose-Hulman Athletic Logo">
         </a>
         <!--button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,9 +24,9 @@
       
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-          <button id="teamsButton" type="button" href="teams.html" class="btn btn-raised btn-light">Teams</button>
+          <button id="teamsButton" type="button" class="btn btn-raised btn-light">Teams</button>
           <button id="profileButton" type="button" class="btn btn-raised btn-light">Profile</button>
-          <button id="loginButton" type="button" href="login.html" class="btn btn-raised btn-light">Log In</button>
+          <button id="loginButton" type="button" class="btn btn-raised btn-light">Log In</button>
           
           <!--ul class="navbar-nav mr-auto">
             <li class="nav-item active">
@@ -40,61 +41,54 @@
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
           </form-->
         </div>
-    </nav>
-    
-    <div id="matchPage" class="row">
+      </nav>
+      
+      <img src="./img/rose-union.jpg" class="background-1">
 
-      <div id="calenderSide" class="col-12 col-lg-5">
+      <!-- <div class="mx-auto text-center mt-5">
+        <img src="./img/logo-header.svg" class="welcome-logo">
+      </div> -->
 
-        <div>
-        <h1 id="month"></h1>
-        <div id="calender" class="row">
-        
+      <!-- TODO: Add a "Request Join" button when logged in-->
 
-
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-3">
+                        <!-- <img alt="Camera Placeholder" src="./img/camera.svg" class="rounded-circle" id="teamProfilePhoto"/> -->
+                        <h3> IMAGE, eventually.</h3>
+                    </div>
+                    <div class="col-md-9">
+                        <h3>
+                            Team Name Placeholder
+                        </h3>
+                        <p>
+                            Team information placeholder
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 id="rosterHeading">
+                            [Team Name] Roster:
+                        </h3>
+                        <ul id="roster">
+                            <li class="list-item">
+                                Keelan Bell
+                            </li>
+                            <li class="list-item">
+                                Cullen LaKemper
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        </div>
-        <div id="reminders">
-          <h1>Reminders:</h1>
-        </div>
-
-
-
-      </div>
-
-      <div id="matchSide" class="col-6">
-        <div id="filterButtons">
-          <button type="button" class="btn btn-raised btn-light">LEAGUE</button>
-          <button type="button" class="btn btn-raised btn-light">SPORT</button>
-          <button type="button" class="btn btn-raised btn-light">LOCATION</button>
-
-          <div id="leagueFilters">
-            <input type="checkbox" id="league1" name="league1" value="Bike">
-            <label for="league1">Greek A</label><br>
-            <input type="checkbox" id="league2" name="league2" value="Car">
-            <label for="league2">Greek B</label><br>
-            <input type="checkbox" id="league3" name="league3" value="Boat">
-            <label for="league3">Res Hall A</label><br>
-            <input type="checkbox" id="league3" name="league3" value="Boat">
-            <label for="league3">Res Hall B</label><br>
-            <input type="checkbox" id="league3" name="league3" value="Boat">
-            <label for="league3">Open</label><br>
-            <button type="button" class="btn btn-raised btn-light">Clear All</button>
-          </div>
-        </div>
-      <div id="matches">
-
-
-
-
-      </div>
-      </div>
-
-
     </div>
-           <img src="./img/rose-union.jpg" class="background-1">
-
-
+  
+      
+    
       <script src="scripts/jquery.min.js"></script>
       <script src="scripts/popper.js"></script>
       <script src="scripts/bootstrap-material-design.js"></script>
@@ -108,8 +102,6 @@
       <script src="/__/firebase/init.js"></script>
       <script src="scripts/rosefire.min.js"></script>
       <script src="scripts/main.js"></script>
-    
-
 </body>
 
 

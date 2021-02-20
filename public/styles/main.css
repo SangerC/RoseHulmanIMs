@@ -131,7 +131,6 @@ body {
     margin-bottom: 15px;
 }
 
-
 .gameInfoButton {
     font-family: "Russo One", Times, Serif;
     background-color: black !important;
@@ -237,4 +236,8 @@ body {
 
 #reminders{
     padding-top: 20px;
+}
+
+#month{
+    text-align: center;
 }

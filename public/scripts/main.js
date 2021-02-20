@@ -3,6 +3,8 @@ var rhit = rhit || {};
 //collections
 rhit.FB_COLLECTION_MATCH = "matches";
 rhit.FB_COLLECTION_SPORTS = "sports";
+rhit.FB_COLLECTION_REMINDERS = "reminders";
+rhit.FB_COLLECTION_TEAM = "teams";
 
 //match definitions
 rhit.FB_KEY_TEAMA = "teama";
@@ -18,10 +20,15 @@ rhit.FB_KEY_AUTHOR = "author";
 //sport definitions
 rhit.FB_KEY_IMG = "image"
 
+//reminder definitions
+rhit.FB_KEY_REMINDERS = "reminder"
+
 //singletons
 rhit.fbMatchManager = null;
 rhit.fbSportManager = null;
+rhit.fbReminderManager = null;
 rhit.fbAuthManager = null;
+rhit.fbTeamManager = null;
 
 rhit.currentDay = null;
 
@@ -44,6 +51,20 @@ rhit.Match = class{
         this.sport = sport;
         this.location = location;
 				this.sportImg = sportImg;
+	}
+}
+
+rhit.Team = class{
+	constructor(id, name, sport, captain, league, org, matches, players, sportImg){
+		this.id=id;
+		this.name=name;
+		this.sport=sport;
+		this.captain=captain;
+		this.league=league;
+		this.org=org;
+		this.matches=matches;
+		this.players=players;
+		this.sportImg = sportsImg;
 	}
 }
 
@@ -84,6 +105,108 @@ rhit.HomePageController = class {
 	</div>`);
 	}
 
+}
+
+rhit.teamsPageController = class {
+	constructor() {
+		rhit.fbTeamsManager.beginListening(this.updateList.bind(this));
+	}
+
+	updateList() {
+		const newList = htmlToElement('<div id="teams"></div>');
+		for (let i = 0; i < rhit.fbTeamManager.length; i++) {
+			const team = rhit.fbTeamManager.getTeamAtIndex(i);
+			const newCard = this._createCard(team);
+			newCard.onclick = (event) => {
+				window.location.href = `/team.html?id=${team.id}`;
+			};
+			newList.appendChild(newCard);
+		}
+
+		const oldList = document.querySelector("#teams");
+		oldList.removeAttribute("id");
+		oldList.hidden = true;
+		oldList.parentElement.appendChild(newList);
+	}
+
+	_createCard(team) {
+		return htmlToElement(`<div class="card">
+		 <div class="card-image-title">
+				<img src="${team.sportImg}" class="icon-image">
+				<p class="card-text">${team.sport}</p>
+				<h3 class="card-header" id="gameTitle">${team.name}</h3>
+		</div>
+		<div class="card-body">
+			<p class="card-text" id="courtAndTimeText">${team.captain}</p>
+			<p class="card-text" id="gameStatusTextText">${team.org} ${team.league}</p>
+		</div>
+	</div>`);
+	}
+
+}
+
+rhit.FbTeamManager = class {
+	constructor() {
+		this._documentSnapshots = [];
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_TEAM);
+		this._unsubscribe = null;
+	}
+
+	add(teamA, teamB, date, league, status, sport, location) {
+		console.log("tried");
+		this._ref.add({
+				[rhit.FB_KEY_TEAMA] : teamA,
+				[rhit.FB_KEY_TEAMB] : teamB,
+				[rhit.FB_KEY_DATE] :  date,
+				[rhit.FB_KEY_LEAGUE] :league,
+				[rhit.FB_KEY_STATUS] :status,
+				[rhit.FB_KEY_SPORT] : sport,
+				[rhit.FB_KEY_LOCATION] : location,
+				[rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
+			})
+			.then(function (docRef) {
+				console.log("Document written with ID: ", docRef.id);
+			})
+			.catch(function (error) {
+				console.error("Error adding document: ", error);
+			});
+	}
+
+	beginListening(changeListener) {
+		this._unsubscribe = this._ref
+			.limit(50)
+			.onSnapshot((querySnapshot) => {
+				this._documentSnapshots = querySnapshot.docs;
+				changeListener();
+			});
+	}
+
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	get length() {
+		return this._documentSnapshots.length;
+	}
+
+	getTeamAtIndex(index) {
+		const docSnapshot = this._documentSnapshots[index];
+		
+		let img = rhit.fbSportManager.getSport("default");
+		if(rhit.fbSportManager.getSport(docSnapshot.get(rhit.FB_KEY_SPORT))!=undefined) img = rhit.fbSportManager.getSport(docSnapshot.get(rhit.FB_KEY_SPORT));
+
+		const team = new rhit.Team(docSnapshot.id,
+			docSnapshot.get(rhit.FB_KEY_TEAMA),
+			docSnapshot.get(rhit.FB_KEY_TEAMB),
+			docSnapshot.get(rhit.FB_KEY_DATE),
+			docSnapshot.get(rhit.FB_KEY_LEAGUE),
+			docSnapshot.get(rhit.FB_KEY_STATUS),
+			docSnapshot.get(rhit.FB_KEY_SPORT),
+			docSnapshot.get(rhit.FB_KEY_LOCATION),
+			img
+			);
+		return team;
+	}
 }
 
 rhit.FbMatchManager = class {
@@ -173,6 +296,34 @@ rhit.FbSportManager = class{
 
 }
 
+rhit.FbReminderManager = class{
+	
+	constructor(){
+		this.ref = firebase.firestore().collection(rhit.FB_COLLECTION_REMINDERS);
+		this.reminders = [];
+		this.getReminders();
+	}
+
+	getReminders(resolve, reject){
+		this.ref.onSnapshot((querySnapshot) =>{
+			querySnapshot.forEach((doc)=>{
+				this.reminders.push(doc.get(rhit.FB_KEY_REMINDERS));
+			});
+			this.placeReminders();
+		});
+	}
+
+	placeReminders(){
+		console.log(this.reminders);
+		console.log(this.reminders.length);
+		for(let i=0;i<this.reminders.length;i++){
+			document.querySelector("#reminders").innerHTML+= "<br>"+this.reminders[i];
+			console.log(this.reminders[i]);
+		}
+	}
+
+}
+
 rhit.FbAuthManager = class {
 	constructor() {
 		this._user = null;
@@ -242,6 +393,8 @@ rhit.checkForRedirects = function() {
 };
 
 rhit.buildCalendar = function(){
+	const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
 	let calender = document.querySelector("calender");
 	let date = new Date();
 	let month = date.getMonth();
@@ -257,6 +410,14 @@ rhit.buildCalendar = function(){
 			else if(day<=days) element = htmlToElement(`<div class="calenderSpace col" data-date="${day}">${day}</div>`);
 			else element = htmlToElement('<div class="calenderSpace col" data-date="-1"></div>');
 			newList.appendChild(element);
+			element.onclick = (event) =>{
+				let list = document.querySelector("#calender");
+				for(let child=list.firstChild; child!==null; child=child.nextSibling) {
+    			child.classList.remove("currentDay");
+				}
+				rhit.currentDay = day;
+				element.classList.add("currentDay");
+			};
 		}
     newList.appendChild(htmlToElement('<div class="w-100"></div>'));
 	}
@@ -265,8 +426,7 @@ rhit.buildCalendar = function(){
 	oldList.removeAttribute("id");
 	oldList.hidden = true;
 	oldList.parentElement.appendChild(newList);
-
-
+	document.querySelector("#month").innerHTML = monthNames[month];
 }
 
 rhit.getDaysFromMonth = function(month, year){
@@ -290,9 +450,34 @@ rhit.checkLeapyear = function(year){
 }
 
 rhit.main = function(){
+	const urlParams = new URLSearchParams(window.location.search);
+	const path = window.location.pathname;
+
 	rhit.fbSportManager = new rhit.FbSportManager();
-	rhit.fbMatchManager = new rhit.FbMatchManager();
-	new rhit.HomePageController();
+	console.log(path);
+	document.querySelector("#teamsButton").onclick = (event) =>{
+		window.location.href = "/teams.html";
+	};
+
+	if(path=="/match.html"){
+		console.log("check");
+		document.querySelector("#backHomeButton").onclick = (event) =>{
+			window.location.href="/";
+		};
+	}
+	else if(path=="/teams.html"){
+		rhit.fbTeamManager = new rhit.FbTeamManager();
+		new rhit.teamsPageController();
+		document.querySelector("#createTeamButton").onclick = (event) =>{
+			window.location.href = "/createTeam.html";
+		};
+	}
+	else if(path=="/"){
+		rhit.fbReminderManager = new rhit.FbReminderManager();
+		rhit.fbMatchManager = new rhit.FbMatchManager();
+		rhit.buildCalendar();
+		new rhit.HomePageController();
+	}
 
 	rhit.fbAuthManager = new rhit.FbAuthManager();
 	rhit.fbAuthManager.beginListening(() => {
@@ -303,7 +488,6 @@ rhit.main = function(){
 
 	//rhit.fbMatchManager.add("Avalanche", "catapults", "10:00 am Friday 02/02/2021","Greek A", "To Be Played","soccer", "SRC court 2");
 
-	rhit.buildCalendar();
 }
 
 rhit.main();
