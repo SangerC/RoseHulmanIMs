@@ -107,6 +107,95 @@ rhit.HomePageController = class {
 
 }
 
+rhit.FbUserManager = class {
+	constructor() {
+		this._collectoinRef = firebase.firestore().collection(rhit.FB_COLLECTION_USERS);
+		this._document = null;
+		this._unsubscribe = null;
+	}
+	addNewUserMaybe(uid, name, photoUrl) {
+		// Check if the User is in Firebase already
+		const userRef = this._collectoinRef.doc(uid);
+		return userRef.get().then((doc) => {
+			if (doc.exists) {
+				console.log("User already exists:", doc.data());
+				// Do nothin there is alread a User!
+				return false;
+			} else {
+				// doc.data() will be undefined in this case
+				console.log("Creating this user!");
+				// Add a new document in collection "cities"
+				return userRef.set({
+						[rhit.FB_KEY_NAME]: name,
+						[rhit.FB_KEY_PHOTO_URL]: photoUrl,
+					})
+					.then(function () {
+						console.log("Document successfully written!");
+						return true;
+					})
+					.catch(function (error) {
+						console.error("Error writing document: ", error);
+					});
+			}
+		}).catch(function (error) {
+			console.log("Error getting document:", error);
+		});
+	}
+	beginListening(uid, changeListener) {
+		const userRef = this._collectoinRef.doc(uid);
+		this._unsubscribe = userRef.onSnapshot((doc) => {
+			if (doc.exists) {
+				console.log("Document data:", doc.data());
+				this._document = doc;
+				changeListener();
+			} else {
+				console.log("No User!  That's bad!");
+			}
+		});
+
+	}
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	get isListening() {
+		return !!this._unsubscribe;
+	}
+
+	updatePhotoUrl(photoUrl) {
+		const userRef = this._collectoinRef.doc(rhit.fbAuthManager.uid);
+		userRef.update({
+				[rhit.FB_KEY_PHOTO_URL]: photoUrl,
+			})
+			.then(() => {
+				console.log("Document successfully updated!");
+			})
+			.catch(function (error) {
+				console.error("Error updating document: ", error);
+			});
+	}
+
+	updateName(name) {
+		const userRef = this._collectoinRef.doc(rhit.fbAuthManager.uid);
+		return userRef.update({
+				[rhit.FB_KEY_NAME]: name,
+			})
+			.then(() => {
+				console.log("Document successfully updated!");
+			})
+			.catch(function (error) {
+				console.error("Error updating document: ", error);
+			});
+	}
+
+	get name() {
+		return this._document.get(rhit.FB_KEY_NAME);
+	}
+	get photoUrl() {
+		return this._document.get(rhit.FB_KEY_PHOTO_URL);
+	}
+}
+
 rhit.teamsPageController = class {
 	constructor() {
 		rhit.fbTeamsManager.beginListening(this.updateList.bind(this));
